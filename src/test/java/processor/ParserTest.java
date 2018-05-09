@@ -125,13 +125,13 @@ public class ParserTest {
 
     @Test(expected = ExceptionCollection.ParserException.class)
     public void testTransformToPostFixUnbalancedParentheses5Invalid() {
-        String expression = "(--)-2^2()";
+        String expression = "(---2^2()";
         Parser.transformToPostFix(Lexer.tokenize(expression));
     }
 
     @Test(expected = ExceptionCollection.ParserException.class)
     public void testTransformToPostFixUnbalancedParentheses6Invalid() {
-        String expression = "-2^(2(2))";
+        String expression = "-(2^(2(2))";
         Parser.transformToPostFix(Lexer.tokenize(expression));
     }
 }
