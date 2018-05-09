@@ -13,4 +13,4 @@ Dijkstra's shunting-yard algorithm. The only check done in this step is to look 
 Since the lexer already implicitly creates a parse-tree, the shunting-yard algorithm generates the abstract syntax tree for the evaluator.
 
 ### Other classes (used in all steps)
-The other classes, like the Token class, build the base. Tokens enforce the correct type congruency so no invalid tokens can be created by the lexer. An enum of operators and a operator util class helps the parser to identify operator precedence and associativity.
+The other classes, like the Token class, build the base. Tokens enforce the correct type congruency so no invalid tokens can be created by the lexer. An enum of operators and an operator util class helps the parser to identify operator precedence and associativity.
