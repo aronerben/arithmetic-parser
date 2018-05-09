@@ -12,7 +12,7 @@ import java.util.Stack;
 public class Parser {
     public static void main(String[] args) {
         List<Token> tokens = Lexer.tokenize("(2*(2-2)^3*1+5%2)");
-        tokens = Lexer.tokenize("2(3)4");
+        tokens = Lexer.tokenize("-2^(2(2)");
         System.out.println(tokens);
         System.out.println(transformToPostFix(tokens));
     }
@@ -36,13 +36,16 @@ public class Parser {
                         if(operators.empty()) {
                             throw new ExceptionCollection.ParserException("Mismatched parentheses at position: " + tokenCounter);
                         }
-                        while (!operators.empty() && !operators.peek().getValue().equals('(')) {
-                            if (!operators.empty()) {
+                        while (!operators.empty()) {
+                            if(!operators.peek().getValue().equals('(')) {
                                 tokensPostFix.add(operators.pop());
                             } else {
-                                //operator stack is empty without left parenthesis found
-                                throw new ExceptionCollection.ParserException("Mismatched parentheses at position: " + tokenCounter);
+                                break;
                             }
+                        }
+                        if (operators.empty()) {
+                            //operator stack is empty without left parenthesis found
+                            throw new ExceptionCollection.ParserException("Mismatched parentheses at position: " + tokenCounter);
                         }
                         //pop left parenthesis
                         operators.pop();

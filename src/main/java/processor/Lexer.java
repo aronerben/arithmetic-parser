@@ -32,7 +32,7 @@ public class Lexer {
                         unaryNeg = true;
                     } else {
                         char lastChar = expression.charAt(i - 1);
-                        if (Symbols.PARTS_NO_UNARY.contains(lastChar)) {
+                        if (Symbols.PARTS_NO_UNARY.contains(lastChar) && lastChar != ')') {
                             unaryNeg = true;
                         }
                     }

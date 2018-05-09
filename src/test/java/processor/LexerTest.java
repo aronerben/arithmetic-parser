@@ -112,16 +112,17 @@ public class LexerTest {
         tokens.add(new Token<>(')', TokenType.OPERATOR));
         assertEquals(tokens, Lexer.tokenize(expression));
 
-        expression = "(3)4";
+        expression = "(3)4!";
         tokens = new ArrayList<>();
         tokens.add(new Token<>('(', TokenType.OPERATOR));
         tokens.add(new Token<>(3d, TokenType.NUMBER));
         tokens.add(new Token<>(')', TokenType.OPERATOR));
         tokens.add(new Token<>('*', TokenType.OPERATOR));
         tokens.add(new Token<>(4d, TokenType.NUMBER));
+        tokens.add(new Token<>('!', TokenType.OPERATOR));
         assertEquals(tokens, Lexer.tokenize(expression));
 
-        expression = "(1.01)3 +412. 5(2.23-2)";
+        expression = "(1.01)3 +412. 5(2.23!-2)";
         tokens = new ArrayList<>();
         tokens.add(new Token<>('(', TokenType.OPERATOR));
         tokens.add(new Token<>(1.01, TokenType.NUMBER));
@@ -133,6 +134,7 @@ public class LexerTest {
         tokens.add(new Token<>('*', TokenType.OPERATOR));
         tokens.add(new Token<>('(', TokenType.OPERATOR));
         tokens.add(new Token<>(2.23, TokenType.NUMBER));
+        tokens.add(new Token<>('!', TokenType.OPERATOR));
         tokens.add(new Token<>('-', TokenType.OPERATOR));
         tokens.add(new Token<>(2d, TokenType.NUMBER));
         tokens.add(new Token<>(')', TokenType.OPERATOR));

@@ -2,6 +2,7 @@ package processor;
 
 import base.Token;
 import base.TokenType;
+import exception.ExceptionCollection;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -24,10 +25,11 @@ public class ParserTest {
         tokens.add(new Token<>('+', TokenType.OPERATOR));
         assertEquals(tokens, Parser.transformToPostFix(Lexer.tokenize(expression)));
 
-        expression = "*+ -*";
+        expression = "*+ -^*";
         tokens = new ArrayList<>();
         tokens.add(new Token<>('*', TokenType.OPERATOR));
         tokens.add(new Token<>('+', TokenType.OPERATOR));
+        tokens.add(new Token<>('^', TokenType.OPERATOR));
         tokens.add(new Token<>('*', TokenType.OPERATOR));
         tokens.add(new Token<>('-', TokenType.OPERATOR));
         assertEquals(tokens, Parser.transformToPostFix(Lexer.tokenize(expression)));
@@ -54,5 +56,82 @@ public class ParserTest {
         assertEquals(tokens, Parser.transformToPostFix(Lexer.tokenize(expression)));
     }
 
-    //TODO(write tests for added things)
+    @Test
+    public void testTransformToPostFixValid() {
+        String expression = "2!(3!)4!";
+        ArrayList<Token> tokens = new ArrayList<>();
+        tokens.add(new Token<>(2d, TokenType.NUMBER));
+        tokens.add(new Token<>('!', TokenType.OPERATOR));
+        tokens.add(new Token<>(3d, TokenType.NUMBER));
+        tokens.add(new Token<>('!', TokenType.OPERATOR));
+        tokens.add(new Token<>('*', TokenType.OPERATOR));
+        tokens.add(new Token<>(4d, TokenType.NUMBER));
+        tokens.add(new Token<>('!', TokenType.OPERATOR));
+        tokens.add(new Token<>('*', TokenType.OPERATOR));
+        assertEquals(tokens, Parser.transformToPostFix(Lexer.tokenize(expression)));
+
+        expression = "4-+*/*-4";
+        tokens = new ArrayList<>();
+        tokens.add(new Token<>(4d, TokenType.NUMBER));
+        tokens.add(new Token<>('-', TokenType.OPERATOR));
+        tokens.add(new Token<>('*', TokenType.OPERATOR));
+        tokens.add(new Token<>('/', TokenType.OPERATOR));
+        tokens.add(new Token<>(-4d, TokenType.NUMBER));
+        tokens.add(new Token<>('*', TokenType.OPERATOR));
+        tokens.add(new Token<>('+', TokenType.OPERATOR));
+        assertEquals(tokens, Parser.transformToPostFix(Lexer.tokenize(expression)));
+
+        expression = "3 + (4) 2 / ( 1 - 5 ) ^ 2 ^ 3";
+        tokens = new ArrayList<>();
+        tokens.add(new Token<>(3d, TokenType.NUMBER));
+        tokens.add(new Token<>(4d, TokenType.NUMBER));
+        tokens.add(new Token<>(2d, TokenType.NUMBER));
+        tokens.add(new Token<>('*', TokenType.OPERATOR));
+        tokens.add(new Token<>(1d, TokenType.NUMBER));
+        tokens.add(new Token<>(5d, TokenType.NUMBER));
+        tokens.add(new Token<>('-', TokenType.OPERATOR));
+        tokens.add(new Token<>(2d, TokenType.NUMBER));
+        tokens.add(new Token<>(3d, TokenType.NUMBER));
+        tokens.add(new Token<>('^', TokenType.OPERATOR));
+        tokens.add(new Token<>('^', TokenType.OPERATOR));
+        tokens.add(new Token<>('/', TokenType.OPERATOR));
+        tokens.add(new Token<>('+', TokenType.OPERATOR));
+        assertEquals(tokens, Parser.transformToPostFix(Lexer.tokenize(expression)));
+    }
+
+    @Test(expected = ExceptionCollection.ParserException.class)
+    public void testTransformToPostFixUnbalancedParentheses1Invalid() {
+        String expression = ")";
+        Parser.transformToPostFix(Lexer.tokenize(expression));
+    }
+
+    @Test(expected = ExceptionCollection.ParserException.class)
+    public void testTransformToPostFixUnbalancedParentheses2Invalid() {
+        String expression = "(";
+        Parser.transformToPostFix(Lexer.tokenize(expression));
+    }
+
+    @Test(expected = ExceptionCollection.ParserException.class)
+    public void testTransformToPostFixUnbalancedParentheses3Invalid() {
+        String expression = ")(";
+        Parser.transformToPostFix(Lexer.tokenize(expression));
+    }
+
+    @Test(expected = ExceptionCollection.ParserException.class)
+    public void testTransformToPostFixUnbalancedParentheses4Invalid() {
+        String expression = "4-(3*4)-2)";
+        Parser.transformToPostFix(Lexer.tokenize(expression));
+    }
+
+    @Test(expected = ExceptionCollection.ParserException.class)
+    public void testTransformToPostFixUnbalancedParentheses5Invalid() {
+        String expression = "(--)-2^2()";
+        Parser.transformToPostFix(Lexer.tokenize(expression));
+    }
+
+    @Test(expected = ExceptionCollection.ParserException.class)
+    public void testTransformToPostFixUnbalancedParentheses6Invalid() {
+        String expression = "-2^(2(2))";
+        Parser.transformToPostFix(Lexer.tokenize(expression));
+    }
 }
