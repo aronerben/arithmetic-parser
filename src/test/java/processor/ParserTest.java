@@ -81,7 +81,7 @@ public class ParserTest {
         tokens.add(new Token<>('+', TokenType.OPERATOR));
         assertEquals(tokens, Parser.transformToPostFix(Lexer.tokenize(expression)));
 
-        expression = "3 + (4) 2 / ( 1 - 5 ) ^ 2 ^ 3";
+        expression = "3 + (4) 2 / ( 1 - 5 ) ^ 2 ^ 3 % 7";
         tokens = new ArrayList<>();
         tokens.add(new Token<>(3d, TokenType.NUMBER));
         tokens.add(new Token<>(4d, TokenType.NUMBER));
@@ -95,6 +95,8 @@ public class ParserTest {
         tokens.add(new Token<>('^', TokenType.OPERATOR));
         tokens.add(new Token<>('^', TokenType.OPERATOR));
         tokens.add(new Token<>('/', TokenType.OPERATOR));
+        tokens.add(new Token<>(7d, TokenType.NUMBER));
+        tokens.add(new Token<>('%', TokenType.OPERATOR));
         tokens.add(new Token<>('+', TokenType.OPERATOR));
         assertEquals(tokens, Parser.transformToPostFix(Lexer.tokenize(expression)));
     }
