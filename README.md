@@ -1,5 +1,6 @@
 # arithmetic-parser
-Parser &amp; interpreter for arithmetic expressions, written in Java.
+Parser/interpreter/evaluator for arithmetic expressions, written in Java.
+Written to learn. Not suitable for situation that requires fast and reliable parsing/evaluation.
 
 ## Class responsibilites by step
 ### 1. Lexer
