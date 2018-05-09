@@ -10,3 +10,7 @@ The tokens are stored in a list. The only check done in this step is to look for
 ### Parser
 The parser transforms the order of tokens into the postfix (or Reverse Polish Notation) notation. This is done using
 Dijkstra's shunting-yard algorithm. The only check done in this step is to look for unbalanced parantheses.
+Since the lexer already implicitly creates a parse-tree, the shunting-yard algorithm generates the abstract syntax tree for the evaluator.
+
+### Other classes
+The other classes, like the Token class, build the base. Tokens enforce the correct type congruency so no invalid tokens can be created by the lexer. An enum of operators and a operator util class helps the parser to identify operator precedence and associativity.
