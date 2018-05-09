@@ -51,6 +51,7 @@ public enum Operator {
     }
 
     @FunctionalInterface
+    //TODO(maybe generify this and cast functions?)
     interface VarArgsFunction {
         Double apply(Double... args);
     }

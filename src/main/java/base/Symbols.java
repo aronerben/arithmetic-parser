@@ -8,7 +8,7 @@ import java.util.stream.Stream;
 
 public interface Symbols {
     Set<Character> GROUPING = new HashSet<>(Arrays.asList('(', ')'));
-    //TODO(functions, but characters? (max = m, sin = s)?)
+    //TODO(functionames, but characters? (max = m, sin = s)?)
     Set<Character> FUNCTIONS = new HashSet<>(Arrays.asList());
     Set<Character> UNARY_OPERATORS = new HashSet<>(Arrays.asList('!'));
     Set<Character> OPERATORS = new HashSet<>(Arrays.asList('+', '-', '*', ':', '/', '^', '%'));
