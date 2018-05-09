@@ -11,12 +11,13 @@ import java.util.Stack;
 
 public class Parser {
     public static void main(String[] args) {
-        List<Token> tokens = Lexer.tokenize("(22.3+324322/2)");
+        List<Token> tokens = Lexer.tokenize("(2*(2-2)^3*1+5%2)");
+        tokens = Lexer.tokenize("2(3)4");
         System.out.println(tokens);
         System.out.println(transformToPostFix(tokens));
     }
 
-    //shunting-yard algorithm to transform into postfix notation
+    //shunting-yard algorithm to transform into postfix notation (RPN), equivalent to AST
     public static List<Token> transformToPostFix(List<Token> tokens) {
         //operator stack and output queue
         Stack<Token> operators = new Stack<>();
@@ -32,8 +33,11 @@ public class Parser {
                         operators.push(curToken);
                         //special case, right parenthesis => pop every operator until matching parenthesis is found
                     } else if (curToken.getValue().equals(')')) {
-                        while(!operators.peek().getValue().equals('(')) {
-                            if(!operators.empty()) {
+                        if(operators.empty()) {
+                            throw new ExceptionCollection.ParserException("Mismatched parentheses at position: " + tokenCounter);
+                        }
+                        while (!operators.empty() && !operators.peek().getValue().equals('(')) {
+                            if (!operators.empty()) {
                                 tokensPostFix.add(operators.pop());
                             } else {
                                 //operator stack is empty without left parenthesis found
@@ -44,13 +48,11 @@ public class Parser {
                         operators.pop();
                     } else {
                         //clean up operator stack according to precedence and associativity
-                        if(!operators.empty()) {
-                            while (!operators.peek().getValue().equals('(')
-                                    && (OperatorUtil.hasGreaterPrecedence((char) operators.peek().getValue(), (char) curToken.getValue())
-                                    || (OperatorUtil.hasEqualPrecedence((char) operators.peek().getValue(), (char) curToken.getValue())
-                                    && (OperatorUtil.getAssociativity((char) operators.peek().getValue()) == Operator.Associativity.LEFT)))) {
-                                tokensPostFix.add(operators.pop());
-                            }
+                        while (!operators.empty() && !operators.peek().getValue().equals('(')
+                                && (OperatorUtil.hasGreaterPrecedence((char) operators.peek().getValue(), (char) curToken.getValue())
+                                || (OperatorUtil.hasEqualPrecedence((char) operators.peek().getValue(), (char) curToken.getValue())
+                                && (OperatorUtil.getAssociativity((char) operators.peek().getValue()) == Operator.Associativity.LEFT)))) {
+                            tokensPostFix.add(operators.pop());
                         }
                         operators.push(curToken);
                     }
@@ -65,7 +67,7 @@ public class Parser {
             if(operators.peek().getValue().equals('(')
                     || operators.peek().getValue().equals(')')) {
                 //leftover parenthesis found
-                throw new ExceptionCollection.ParserException("Mismatched parentheses at position: " + tokenCounter);
+                throw new ExceptionCollection.ParserException("Mismatched parentheses found.");
             }
             tokensPostFix.add(operators.pop());
         }

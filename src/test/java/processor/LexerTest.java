@@ -22,7 +22,7 @@ public class LexerTest {
         String expression = "2";
         ArrayList<Token> tokens = new ArrayList<>();
         tokens.add(new Token<>(2d, TokenType.NUMBER));
-        assertTrue(tokens.equals(Lexer.tokenize(expression)));
+        assertEquals(tokens, Lexer.tokenize(expression));
 
         expression = "223 42";
         tokens = new ArrayList<>();
@@ -35,7 +35,7 @@ public class LexerTest {
         String expression = "2.0";
         ArrayList<Token> tokens = new ArrayList<>();
         tokens.add(new Token<>(2.0, TokenType.NUMBER));
-        assertTrue(tokens.equals(Lexer.tokenize(expression)));
+        assertEquals(tokens,Lexer.tokenize(expression));
 
         expression = "223 42.232";
         tokens = new ArrayList<>();
@@ -50,7 +50,7 @@ public class LexerTest {
         tokens.add(new Token<>('*', TokenType.OPERATOR));
         assertEquals(tokens, Lexer.tokenize(expression));
 
-        expression = "*))*+ /+";
+        expression = "*))*+ /+-";
         tokens = new ArrayList<>();
         tokens.add(new Token<>('*', TokenType.OPERATOR));
         tokens.add(new Token<>(')', TokenType.OPERATOR));
@@ -59,6 +59,7 @@ public class LexerTest {
         tokens.add(new Token<>('+', TokenType.OPERATOR));
         tokens.add(new Token<>('/', TokenType.OPERATOR));
         tokens.add(new Token<>('+', TokenType.OPERATOR));
+        tokens.add(new Token<>('-', TokenType.OPERATOR));
         assertEquals(tokens, Lexer.tokenize(expression));
     }
 
@@ -84,8 +85,7 @@ public class LexerTest {
         tokens.add(new Token<>(232.23, TokenType.NUMBER));
         tokens.add(new Token<>('*', TokenType.OPERATOR));
         tokens.add(new Token<>('(', TokenType.OPERATOR));
-        tokens.add(new Token<>('-', TokenType.OPERATOR));
-        tokens.add(new Token<>(9.534, TokenType.NUMBER));
+        tokens.add(new Token<>(-9.534, TokenType.NUMBER));
         tokens.add(new Token<>('^', TokenType.OPERATOR));
         tokens.add(new Token<>('(', TokenType.OPERATOR));
         tokens.add(new Token<>(123d, TokenType.NUMBER));
@@ -98,6 +98,64 @@ public class LexerTest {
         tokens.add(new Token<>('*', TokenType.OPERATOR));
         tokens.add(new Token<>(94.4, TokenType.NUMBER));
         tokens.add(new Token<>(')', TokenType.OPERATOR));
+        assertEquals(tokens, Lexer.tokenize(expression));
+    }
+
+    @Test
+    public void testTokenizeImplicitMultValid() {
+        String expression = "3(4)";
+        ArrayList<Token> tokens = new ArrayList<>();
+        tokens.add(new Token<>(3d, TokenType.NUMBER));
+        tokens.add(new Token<>('*', TokenType.OPERATOR));
+        tokens.add(new Token<>('(', TokenType.OPERATOR));
+        tokens.add(new Token<>(4d, TokenType.NUMBER));
+        tokens.add(new Token<>(')', TokenType.OPERATOR));
+        assertEquals(tokens, Lexer.tokenize(expression));
+
+        expression = "(3)4";
+        tokens = new ArrayList<>();
+        tokens.add(new Token<>('(', TokenType.OPERATOR));
+        tokens.add(new Token<>(3d, TokenType.NUMBER));
+        tokens.add(new Token<>(')', TokenType.OPERATOR));
+        tokens.add(new Token<>('*', TokenType.OPERATOR));
+        tokens.add(new Token<>(4d, TokenType.NUMBER));
+        assertEquals(tokens, Lexer.tokenize(expression));
+
+        expression = "(1.01)3 +412. 5(2.23-2)";
+        tokens = new ArrayList<>();
+        tokens.add(new Token<>('(', TokenType.OPERATOR));
+        tokens.add(new Token<>(1.01, TokenType.NUMBER));
+        tokens.add(new Token<>(')', TokenType.OPERATOR));
+        tokens.add(new Token<>('*', TokenType.OPERATOR));
+        tokens.add(new Token<>(3d, TokenType.NUMBER));
+        tokens.add(new Token<>('+', TokenType.OPERATOR));
+        tokens.add(new Token<>(412.5, TokenType.NUMBER));
+        tokens.add(new Token<>('*', TokenType.OPERATOR));
+        tokens.add(new Token<>('(', TokenType.OPERATOR));
+        tokens.add(new Token<>(2.23, TokenType.NUMBER));
+        tokens.add(new Token<>('-', TokenType.OPERATOR));
+        tokens.add(new Token<>(2d, TokenType.NUMBER));
+        tokens.add(new Token<>(')', TokenType.OPERATOR));
+        assertEquals(tokens, Lexer.tokenize(expression));
+    }
+
+    @Test
+    public void testTokenizeUnaryNegValid() {
+        String expression = "-";
+        ArrayList<Token> tokens = new ArrayList<>();
+        tokens.add(new Token<>('-', TokenType.OPERATOR));
+        assertEquals(tokens, Lexer.tokenize(expression));
+
+        expression = "-4";
+        tokens = new ArrayList<>();
+        tokens.add(new Token<>(-4d, TokenType.NUMBER));
+        assertEquals(tokens, Lexer.tokenize(expression));
+
+        expression = "5--4";
+        tokens = new ArrayList<>();
+        tokens.add(new Token<>(5d, TokenType.NUMBER));
+        tokens.add(new Token<>('-', TokenType.OPERATOR));
+        tokens.add(new Token<>(-4d, TokenType.NUMBER));
         assertEquals(tokens, Lexer.tokenize(expression));
     }
 
@@ -122,6 +180,12 @@ public class LexerTest {
     @Test(expected = ExceptionCollection.TokenizeException.class)
     public void testTokenizeUnexpectedSymbol4Invalid() {
         String expression = "42.";
+        Lexer.tokenize(expression);
+    }
+
+    @Test(expected = ExceptionCollection.TokenizeException.class)
+    public void testTokenizeUnexpectedSymbol5Invalid() {
+        String expression = "42.-0";
         Lexer.tokenize(expression);
     }
 

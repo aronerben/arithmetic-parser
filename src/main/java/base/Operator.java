@@ -7,10 +7,13 @@ public enum Operator {
     ADD(1, LEFT, '+'),
     SUB(1, LEFT, '-'),
     MUL(2, LEFT, '*'),
-    DIV(2, LEFT, '/'),
+    DIV1(2, LEFT, '/'),
+    DIV2(2, LEFT, ':'),
+    MOD(2, LEFT, '%'),
     POW(3, RIGHT, '^'),
     PARLEFT(4, null, '('),
-    PARRIGHT(4, null, ')');
+    PARRIGHT(4, null, ')'),
+    FAC(5, null, '!');
 
     private int precedence;
     private Associativity associativity;

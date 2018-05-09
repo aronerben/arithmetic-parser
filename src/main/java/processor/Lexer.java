@@ -9,15 +9,44 @@ import java.util.*;
 
 public class Lexer {
 
+    //TODO(functions)
     public static List<Token> tokenize(String expression) {
         //normalize expression (remove whitespace)
         expression = expression.replaceAll("\\s+","");
         List<Token> tokens = new ArrayList<>();
+        boolean unaryNeg = false;
         for(int i = 0; i < expression.length();) {
             char curChar = expression.charAt(i);
             //check if operator
-            if(Symbols.OPERATORS.contains(curChar)) {
-                tokens.add(new Token<>(curChar, TokenType.OPERATOR));
+            if(Symbols.PARTS.contains(curChar)) {
+                //implicit multiplication (before parenthesis)
+                if(curChar == '(' && i != 0) {
+                    char lastChar = expression.charAt(i-1);
+                    if(lastChar == ')' || Symbols.UNARY_OPERATORS.contains(lastChar) ||Character.isDigit(lastChar)) {
+                        tokens.add(new Token<>('*', TokenType.OPERATOR));
+                    }
+                }
+                //unary operator -, only if next character is digit
+                if(curChar == '-' && i != expression.length()-1 && Character.isDigit(expression.charAt(i+1))) {
+                    if(i == 0) {
+                        unaryNeg = true;
+                    } else {
+                        char lastChar = expression.charAt(i - 1);
+                        if (Symbols.PARTS_NO_UNARY.contains(lastChar)) {
+                            unaryNeg = true;
+                        }
+                    }
+                }
+                if(!unaryNeg) {
+                    tokens.add(new Token<>(curChar, TokenType.OPERATOR));
+                }
+                //implicit multiplication (after parenthesis)
+                if(curChar == ')' && i != expression.length()-1) {
+                    char nextChar = expression.charAt(i+1);
+                    if(nextChar == '(' || Character.isDigit(nextChar)) {
+                        tokens.add(new Token<>('*', TokenType.OPERATOR));
+                    }
+                }
                 i++;
                 //check if number
             } else if(Character.isDigit(curChar)) {
@@ -34,9 +63,10 @@ public class Lexer {
                 if(expression.charAt(j-1) == '.') {
                     throw new ExceptionCollection.TokenizeException("Invalid token found: " + curChar + "     Found at position: " + i);
                 }
-                tokens.add(new Token<>(Double.parseDouble(expression.substring(i, j)), TokenType.NUMBER));
+                tokens.add(new Token<>(Double.parseDouble((unaryNeg ? "-" : "") + expression.substring(i, j)), TokenType.NUMBER));
                 //update token index to skip after entire read number
                 i = j;
+                unaryNeg = false;
             } else {
                 throw new ExceptionCollection.TokenizeException("Invalid token found: " + curChar + "     Found at position: " + i);
             }

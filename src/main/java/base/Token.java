@@ -18,7 +18,7 @@ public class Token<T> {
         //check for: number & operator type congruency + invalid operator
         if ((this.type == TokenType.NUMBER && !(this.value instanceof Number))
                 || (this.type == TokenType.OPERATOR && !(this.value instanceof Character))
-                || !Symbols.OPERATORS.contains(this.value) && this.value instanceof Character) {
+                || !Symbols.PARTS.contains(this.value) && this.value instanceof Character) {
                 throw new ExceptionCollection.TokenException("Invalid token created, value: " + this.value
                         + ", given value type: " + this.value.getClass() + ", required type: " + this.type);
         }
