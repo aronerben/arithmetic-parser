@@ -1,6 +1,7 @@
 package processor;
 
 import base.Operator;
+import base.Symbols;
 import base.Token;
 import exception.ExceptionCollection;
 import util.OperatorUtil;
@@ -45,15 +46,19 @@ public class Parser {
                         //pop left parenthesis
                         operators.pop();
                     } else {
-                        //clean up operator stack according to precedence and associativity
-                        while(!operators.empty() && !operators.peek().getValue().equals('(')
-                                && (OperatorUtil.hasGreaterPrecedence((char) operators.peek().getValue(), (char) curToken.getValue())
-                                || (OperatorUtil.hasEqualPrecedence((char) operators.peek().getValue(), (char) curToken.getValue())
-                                && (Objects.requireNonNull(OperatorUtil.getOperator((char) operators.peek().getValue())).getAssociativity()
+                        if(Symbols.UNARY_OPERATORS.contains(curToken.getValue())) {
+                            tokensPostFix.add(curToken);
+                        } else {
+                            //clean up operator stack according to precedence and associativity
+                            while(!operators.empty() && !operators.peek().getValue().equals('(')
+                                    && (OperatorUtil.hasGreaterPrecedence((char) operators.peek().getValue(), (char) curToken.getValue())
+                                    || (OperatorUtil.hasEqualPrecedence((char) operators.peek().getValue(), (char) curToken.getValue())
+                                    && (Objects.requireNonNull(OperatorUtil.getOperator((char) operators.peek().getValue())).getAssociativity()
                                     == Operator.Associativity.LEFT)))) {
-                            tokensPostFix.add(operators.pop());
+                                tokensPostFix.add(operators.pop());
+                            }
+                            operators.push(curToken);
                         }
-                        operators.push(curToken);
                     }
                     break;
                 case NUMBER:

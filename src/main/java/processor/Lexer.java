@@ -22,7 +22,7 @@ public class Lexer {
                 //implicit multiplication (before parenthesis)
                 if(curChar == '(' && i != 0) {
                     char lastChar = expression.charAt(i-1);
-                    if(lastChar == ')' || Symbols.UNARY_OPERATORS.contains(lastChar) ||Character.isDigit(lastChar)) {
+                    if(lastChar == ')' || Symbols.UNARY_OPERATORS.contains(lastChar) || Character.isDigit(lastChar)) {
                         tokens.add(new Token<>('*', TokenType.OPERATOR));
                     }
                 }

@@ -5,6 +5,7 @@ import base.Symbols;
 import base.Token;
 import base.TokenType;
 import exception.ExceptionCollection;
+import util.MathUtil;
 import util.OperatorUtil;
 
 import java.util.List;
@@ -13,17 +14,17 @@ import java.util.Stack;
 
 public class Evaluator {
     public static void main(String[] args) {
-        List<Token> tokens = Lexer.tokenize("3(-2!3)");
+        List<Token> tokens = Lexer.tokenize("1.5(18/(10-1))");
         //tokens = Lexer.tokenize("*3(*-2!3)");
         System.out.println(tokens);
         List<Token> transformedTokens = Parser.transformToPostFix(tokens);
         System.out.println(transformedTokens);
-        double result = evaluate(transformedTokens);
+        double result = evaluate(transformedTokens, 3);
         System.out.println(result);
     }
 
     //stack-based evaluation of RPN expression
-    public static double evaluate(List<Token> tokens) {
+    public static double evaluate(List<Token> tokens, int digitToRound) {
         Stack<Token> evalStack = new Stack<>();
         for(Token curToken : tokens) {
             //push number to stack
@@ -55,9 +56,10 @@ public class Evaluator {
             }
         }
         //numbers left over
-        if(!evalStack.empty()) {
+        if(evalStack.size() > 1) {
             throw new ExceptionCollection.EvaluatorException("No operator found to map to number.");
         }
-        return (double) evalStack.pop().getValue();
+        //only value in stack is result, round it to given digit number
+        return MathUtil.round((double) evalStack.pop().getValue(), digitToRound);
     }
 }

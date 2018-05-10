@@ -2,6 +2,9 @@ package util;
 
 import exception.ExceptionCollection;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+
 public class MathUtil {
 
     public static double factorial(Double number) {
@@ -18,6 +21,16 @@ public class MathUtil {
             factorial *= i;
         }
         return (double)factorial;
+    }
+
+    public static double round(Double number, int accuracy) {
+        StringBuilder format = new StringBuilder("#.");
+        for(int i = 0; i < accuracy; i++) {
+            format.append('#');
+        }
+        DecimalFormat df = new DecimalFormat(format.toString());
+        df.setRoundingMode(RoundingMode.HALF_UP);
+        return Double.valueOf(df.format(number));
     }
 
     private static boolean hasDecimalExpansion(Double number) {
