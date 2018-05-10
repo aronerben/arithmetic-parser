@@ -1,7 +1,7 @@
 # arithmetic-parser
 Parser/interpreter/evaluator for arithmetic expressions, written in Java.
-Written to learn. Not suitable for situation that requires fast and reliable parsing/evaluation.
-Some expression that can be (correctly) evaluated, the output is always a double:
+Written to learn. Not suitable for situations that require fast and reliable parsing/evaluation.
+Some expressions that can be (correctly) evaluated (output is always a double):
 - "2-1"
   - result: 1
 - "2^3-1"
