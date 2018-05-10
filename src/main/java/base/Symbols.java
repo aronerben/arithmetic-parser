@@ -11,12 +11,12 @@ public interface Symbols {
     //TODO(functionames, but characters? (max = m, sin = s)?)
     Set<Character> FUNCTIONS = new HashSet<>(Arrays.asList());
     Set<Character> UNARY_OPERATORS = new HashSet<>(Arrays.asList('!'));
-    Set<Character> OPERATORS = new HashSet<>(Arrays.asList('+', '-', '*', ':', '/', '^', '%'));
+    Set<Character> BI_OPERATORS = new HashSet<>(Arrays.asList('+', '-', '*', ':', '/', '^', '%'));
     Set<Character> PARTS =
-            Stream.concat(Stream.concat(Stream.concat(GROUPING.stream(), FUNCTIONS.stream()), UNARY_OPERATORS.stream()), OPERATORS.stream())
+            Stream.concat(Stream.concat(Stream.concat(GROUPING.stream(), FUNCTIONS.stream()), UNARY_OPERATORS.stream()), BI_OPERATORS.stream())
                     .collect(Collectors.toSet());
     Set<Character> PARTS_NO_UNARY =
-            Stream.concat(Stream.concat(GROUPING.stream(), FUNCTIONS.stream()), OPERATORS.stream())
+            Stream.concat(Stream.concat(GROUPING.stream(), FUNCTIONS.stream()), BI_OPERATORS.stream())
                     .collect(Collectors.toSet());
 
 }

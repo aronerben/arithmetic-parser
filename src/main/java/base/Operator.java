@@ -15,7 +15,7 @@ public enum Operator {
     POW(3, RIGHT, '^', a -> Math.pow(a[0], a[1])),
     PARLEFT(4, null, '(', null),
     PARRIGHT(4, null, ')', null),
-    FAC(5, null, '!', a -> MathUtil.factorial(a[0].intValue()));
+    FAC(5, null, '!', a -> MathUtil.factorial(a[0]));
 
     private int precedence;
     private Associativity associativity;
@@ -51,7 +51,8 @@ public enum Operator {
     }
 
     @FunctionalInterface
-    //TODO(maybe generify this and cast functions?)
+    public
+            //TODO(maybe generify this and cast functions?)
     interface VarArgsFunction {
         Double apply(Double... args);
     }

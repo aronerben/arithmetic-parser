@@ -37,6 +37,13 @@ public class Lexer {
                         }
                     }
                 }
+                //unary operator -, only if last character is digit
+                if(curChar == '!' && i != 0) {
+                    char lastChar = expression.charAt(i-1);
+                    if(!Character.isDigit(lastChar)) {
+                        throw new ExceptionCollection.TokenizeException(curChar, i+1);
+                    }
+                }
                 if(!unaryNeg) {
                     tokens.add(new Token<>(curChar, TokenType.OPERATOR));
                 }
@@ -61,14 +68,14 @@ public class Lexer {
                 }
                 //check invalid point
                 if(expression.charAt(j-1) == '.') {
-                    throw new ExceptionCollection.TokenizeException("Invalid token found: " + curChar + "     Found at position: " + i);
+                    throw new ExceptionCollection.TokenizeException(curChar, i+1);
                 }
                 tokens.add(new Token<>(Double.parseDouble((unaryNeg ? "-" : "") + expression.substring(i, j)), TokenType.NUMBER));
                 //update token index to skip after entire read number
                 i = j;
                 unaryNeg = false;
             } else {
-                throw new ExceptionCollection.TokenizeException("Invalid token found: " + curChar + "     Found at position: " + i);
+                throw new ExceptionCollection.TokenizeException(curChar, i+1);
             }
         }
         return tokens;
