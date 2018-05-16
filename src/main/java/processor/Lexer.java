@@ -37,7 +37,7 @@ public class Lexer {
                         }
                     }
                 }
-                //unary operator -, only if last character is digit
+                //unary operator !, only if last character is digit
                 if(curChar == '!' && i != 0) {
                     char lastChar = expression.charAt(i-1);
                     if(!Character.isDigit(lastChar)) {
