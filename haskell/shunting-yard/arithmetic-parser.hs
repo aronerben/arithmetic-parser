@@ -38,7 +38,7 @@ number = do
 
 parse :: ReadP [Token]
 parse = do
-       parsed <- many1 (number +++ operator)
+       parsed <- many (number +++ operator)
        return parsed
 
 tokenize :: String -> Either String [Token]
