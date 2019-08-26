@@ -44,7 +44,7 @@ parse = do
 tokenize :: String -> Either String [Token]
 tokenize inp = case res of 
                 (parsed, "") -> Right parsed
-                (_, rest@(tk:_)) -> Left $ "Invalid token: " ++ [tk] ++ " at position: " ++ show pos
+                (_, tk:_) -> Left $ "Invalid token: " ++ [tk] ++ " at position: " ++ show pos
           where res = last $ readP_to_S parse inp
                 pos = (length inp) - (length $ snd res) + 1
 
