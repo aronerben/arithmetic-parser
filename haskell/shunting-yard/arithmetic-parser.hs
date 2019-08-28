@@ -8,15 +8,15 @@ data Associativity = ALeft | ARight
 
 type Precedence = Integer
 
-data Token = Number Int | Operator {
+data Token = Number Integer | Operator {
     sym :: Char,
     preced :: Precedence,
-    assoc :: Associativity
+    assoc :: Associativity,
+    fn :: Integer -> Integer -> Integer
   }
-  deriving (Show)
 
 operators :: [Token]
-operators = [(Operator '+' 0 ALeft), (Operator '-' 0 ALeft)]
+operators = [(Operator '+' 0 ALeft (+)), (Operator '-' 0 ALeft (-))]
 
 -- Util
 -- TODO missing pattern match
@@ -50,19 +50,30 @@ tokenize inp = case res of
 
 -- Transform and Eval
 shunyard :: [Token] -> [Token]
-shunyard tks = foldl f ([], []) tks
-          where f = (\acc cur -> case cur of
-                    (Number nr) -> (nr:(fst acc), snd acc)
-                    op -> applyOperator op acc)
+shunyard tks = let (res, ops) = foldl transform ([], []) tks in reverse $ reverse ops ++ res
+          where transform = (\acc cur -> applyToken cur acc)
+
+applyToken :: Token -> ([Token], [Token]) -> ([Token], [Token])
+-- Actual shunting yard algo runs here
+applyToken all@(Number nr) (out, ops) = (all:out, ops)
+applyToken op (out, ops) = if null pop then (out, op:ops) else (pop ++ out , op:(drop (length pop) ops))
+                        where pop = takeWhile ((>= preced op) . preced) ops
+
+-- TODO error handling
+eval :: [Token] -> Integer
+eval tks = let [res] = foldl eval' [] tks in res
+        where eval' = (\acc cur -> case cur of 
+                        (Number nr) -> nr:acc
+                        -- TODO beautify, dont use hardcoded index, try 
+                        op -> ((fn op) (acc !! 1) (acc !! 0)):(drop 2 acc)
+                      )
+
 
 -- TODO delete
 temp inp = case tokenize inp of
             (Right parsed) -> shunyard parsed
 
---
---eval :: [Token] -> Int
---eval = 1
---
+
 --run :: String -> Either String Integer
 --run inp = case tokenize inp of
 --           (Right parsed) -> Right $ eval $ shunyard parsed
